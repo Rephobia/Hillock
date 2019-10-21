@@ -6,10 +6,14 @@ namespace model {
 	class runner;
 }
 
+namespace view {
+	class runners;
+}
+
 namespace model::dal {
 	inline static const std::string FILE_NAME {"runners.txt"};
 	
-	std::vector<model::runner> read();
+	view::runners* read();
 }
 
 
