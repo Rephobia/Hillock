@@ -3,30 +3,38 @@
 
 
 #include <QMainWindow>
+#include <QVBoxLayout>
 
+namespace model
+{
+	class runner;
+}
 
 namespace Ui
 {
 	class MainWindow;
 }
 
-
 namespace view
 {
 	class mainwindow;
+	class runners;
 }
 
+
 class view::mainwindow : public QMainWindow
-{
-	Q_OBJECT
+{                          
 public:
-	mainwindow(QWidget* parent = nullptr);
+	mainwindow(view::runners* runners,
+	           QWidget* parent = nullptr);
+	
 	~mainwindow();
 	
 	void dragEnterEvent(QDragEnterEvent* e);
 	void dropEvent(QDropEvent* e);
 private:
 	Ui::MainWindow* ui;
+	view::runners* m_runners;
 };
 
 
