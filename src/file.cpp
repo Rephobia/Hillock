@@ -21,7 +21,7 @@ view::runners* model::dal::read()
 
 			QString string {QString::fromUtf8(line.c_str())};
 			runners->add(model::runner {std::move(string)});
-			
+
 		}
 		
 	} else {

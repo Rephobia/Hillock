@@ -20,7 +20,7 @@ class model::runner
 public:
 	explicit runner(QString&& path);
 	
-	void start();
+	void start(QObject* parent);
 	
 	const QString& name() const;
 	void change_path(QString&& path);
@@ -34,6 +34,7 @@ class view::runners : public QWidget
 public:
 	runners();
 	void add(model::runner&& runner);
+	void run();
 protected:
 	QVBoxLayout* m_layout;
 	std::vector<model::runner> m_runners;

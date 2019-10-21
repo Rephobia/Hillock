@@ -3,7 +3,7 @@
 
 
 #include <QMainWindow>
-
+#include <QVBoxLayout>
 
 namespace model
 {
@@ -34,6 +34,7 @@ public:
 	void dropEvent(QDropEvent* e);
 private:
 	Ui::MainWindow* ui;
+	view::runners* m_runners;
 };
 
 
