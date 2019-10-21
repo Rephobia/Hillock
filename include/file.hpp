@@ -14,6 +14,7 @@ namespace model::dal {
 	inline static const std::string FILE_NAME {"runners.txt"};
 	
 	view::runners* read();
+	void append(const QString& filepath);
 }
 
 

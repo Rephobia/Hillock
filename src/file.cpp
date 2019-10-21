@@ -34,3 +34,10 @@ view::runners* model::dal::read()
 	return runners;
 }
 
+void model::dal::append(const QString& filepath)
+{
+	std::ofstream outfile;
+
+	outfile.open(model::dal::FILE_NAME, std::ios_base::app);
+	outfile << filepath.toStdString() << std::endl; 
+}
