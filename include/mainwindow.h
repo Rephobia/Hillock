@@ -5,22 +5,28 @@
 #include <QMainWindow>
 
 
+namespace model
+{
+	class runner;
+}
+
 namespace Ui
 {
 	class MainWindow;
 }
-
 
 namespace view
 {
 	class mainwindow;
 }
 
+
 class view::mainwindow : public QMainWindow
-{
-	Q_OBJECT
+{                          
 public:
-	mainwindow(QWidget* parent = nullptr);
+	mainwindow(std::vector<model::runner> runners,
+	           QWidget* parent = nullptr);
+	
 	~mainwindow();
 	
 	void dragEnterEvent(QDragEnterEvent* e);
