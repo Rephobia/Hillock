@@ -8,7 +8,7 @@
 
 using view::mainwindow;
 
-mainwindow::mainwindow(std::vector<model::runner> runners,
+mainwindow::mainwindow(view::runners* runners,
                        QWidget* parent)
 	: QMainWindow {parent}
 	, ui          {new Ui::MainWindow {}}
@@ -16,15 +16,7 @@ mainwindow::mainwindow(std::vector<model::runner> runners,
 	ui->setupUi(this);
 	QMainWindow::setWindowTitle("Hillock"); // this line have to be after ui->setupUi(this)
 
-	auto container = new QWidget {};
-	auto runner_layout {new QVBoxLayout {}};
-	container->setLayout(runner_layout);
-
-	for (auto& e: runners) {
-		runner_layout->addWidget(new QLabel {e.name()});
-	}
-	
-	ui->scrollArea->setWidget(container);
+	ui->scrollArea->setWidget(runners);
 
 	setAcceptDrops(true);
 }

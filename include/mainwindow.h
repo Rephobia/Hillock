@@ -18,13 +18,14 @@ namespace Ui
 namespace view
 {
 	class mainwindow;
+	class runners;
 }
 
 
 class view::mainwindow : public QMainWindow
 {                          
 public:
-	mainwindow(std::vector<model::runner> runners,
+	mainwindow(view::runners* runners,
 	           QWidget* parent = nullptr);
 	
 	~mainwindow();

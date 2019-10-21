@@ -2,9 +2,16 @@
 #define HILLOCK_RUNNER_HPP
 
 
-namespace model
-{
+#include <QVBoxLayout>
+#include <QWidget>
+
+
+namespace model {
 	class runner;	
+}
+
+namespace view {
+	class runners;
 }
 
 
@@ -15,10 +22,21 @@ public:
 	
 	void start();
 	
-	QString name();
+	const QString& name() const;
 	void change_path(QString&& path);
 protected:
 	QString m_path;
+};
+
+
+class view::runners : public QWidget
+{
+public:
+	runners();
+	void add(model::runner&& runner);
+protected:
+	QVBoxLayout* m_layout;
+	std::vector<model::runner> m_runners;
 };
 
 

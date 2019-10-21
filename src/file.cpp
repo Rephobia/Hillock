@@ -7,9 +7,9 @@
 #include "runner.hpp"
 
 
-std::vector<model::runner> model::dal::read()
+view::runners* model::dal::read()
 {
-	std::vector<model::runner> runners {};
+	auto runners {new view::runners {}};
  
 	std::ifstream file {model::dal::FILE_NAME};
 	
@@ -20,7 +20,7 @@ std::vector<model::runner> model::dal::read()
 		while (std::getline(file, line)) {
 
 			QString string {QString::fromUtf8(line.c_str())};
-			runners.push_back(model::runner {std::move(string)});
+			runners->add(model::runner {std::move(string)});
 			
 		}
 		
