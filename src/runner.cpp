@@ -36,11 +36,11 @@ runners::runners()
 { ;}
 
 
-void runners::add(model::runner&& runner)
+void runners::add(QString&& path)
 {
-	m_layout->addWidget(new QLabel {runner.name()});
+	m_layout->addWidget(new QLabel {path});
 
-	m_runners.push_back(std::move(runner));
+	m_runners.push_back(model::runner {std::move(path)});
 }
 
 void runners::run()

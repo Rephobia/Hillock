@@ -10,9 +10,17 @@ int main(int argc, char* argv[])
 {
 	QApplication app {argc, argv};
 
-	auto runners {model::dal::read()};       
+	auto runners {new view::runners {}};
+	
+	model::dal::read(runners);
 	
 	view::mainwindow w {runners};
+
+	QObject::connect(&w, &view::mainwindow::new_runner,
+	                 model::dal::append);
+
+
+	
 	w.show();
 	
 	return app.exec();
