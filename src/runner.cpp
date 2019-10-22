@@ -3,6 +3,8 @@
 #include <QProcess>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "runner.hpp"
 #include "file.hpp"
@@ -17,9 +19,13 @@ runner::runner(QString&& path)
 
 void runner::start(QObject* parent)
 {
-	auto process {new QProcess {parent}};
-	
-	process->start(m_path);	
+	if (m_path.contains(".ahk")) {
+		QDesktopServices::openUrl(QUrl::fromLocalFile(m_path));
+	}
+	else {
+		auto process {new QProcess {parent}};
+		process->start(m_path);	
+	}
 }
 
 const QString& runner::name() const
