@@ -2,6 +2,8 @@
 #define HILLOCK_RUNNER_HPP
 
 
+#include <list>
+
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -36,8 +38,11 @@ public:
 	void add(QString&& path);
 	void run();
 protected:
+	void make_runner_widget(model::runner& runner);
+	void remove_widget(QString&& path);
+protected:
 	QVBoxLayout* m_layout;
-	std::vector<model::runner> m_runners;
+	std::list<model::runner> m_runners;
 };
 
 

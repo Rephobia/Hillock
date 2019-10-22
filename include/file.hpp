@@ -33,6 +33,7 @@ namespace model::dal {
 	}
 	
 	void append(const QString& filepath);
+	void remove(const std::string& filepath);
 }
 
 
