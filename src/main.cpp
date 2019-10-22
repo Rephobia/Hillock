@@ -10,7 +10,9 @@ int main(int argc, char* argv[])
 {
 	QApplication app {argc, argv};
 
-	auto runners {model::dal::read()};       
+	auto runners {new view::runners {}};
+	
+	model::dal::read(runners);
 	
 	view::mainwindow w {runners};
 	w.show();
