@@ -5,7 +5,7 @@
 #include <QPushButton>
 #include <QDesktopServices>
 #include <QUrl>
-
+#include <QFileInfo>
 #include "runner.hpp"
 #include "file.hpp"
 
@@ -13,7 +13,8 @@
 using model::runner;
 
 runner::runner(QString&& path)
-	: m_path {std::move(path)}
+	: m_name {QFileInfo(path).fileName()}
+	, m_path {std::move(path)}
 { ;}
 
 
@@ -27,8 +28,11 @@ void runner::start(QObject* parent)
 		process->start(m_path);	
 	}
 }
-
-const QString& runner::name() const
+const QString& runner::name_wd() const
+{
+	return m_name;
+}
+const QString& runner::path() const
 {
 	return m_path;
 }
@@ -56,27 +60,27 @@ void runners::add(QString&& path)
 void runners::make_runner_widget(model::runner& runner)
 {
 	auto widget {new QWidget {}};
-	widget->setObjectName(runner.name());
+	widget->setObjectName(runner.path());
 	
 	auto runner_lay {new QHBoxLayout {widget}};
 
-	runner_lay->addWidget(new QLabel {runner.name()});
+	runner_lay->addWidget(new QLabel {runner.name_wd()});
 
 	auto remove {new QPushButton {"remove"}};
 	
 	QObject::connect(remove, &QPushButton::clicked,
 	                 [this, &runner]()
 	                 {
-		                 model::dal::remove(runner.name().toStdString());
+		                 model::dal::remove(runner.path().toStdString());
 
 		                 auto lambda {[&runner](const model::runner& obj)
 		                              {
-			                              return runner.name() == obj.name();
+			                              return runner.path() == obj.path();
 		                              }};
 		                 
 		                 auto it {std::find_if(m_runners.begin(), m_runners.end(), lambda)};
 
-		                 auto widget {this->findChild<QWidget*>(runner.name())};
+		                 auto widget {this->findChild<QWidget*>(runner.path())};
 		                 widget->hide();
 		                 widget->deleteLater();
 		                 m_runners.erase(it);
