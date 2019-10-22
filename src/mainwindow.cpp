@@ -5,7 +5,6 @@
 #include "./ui_mainwindow.h"
 
 #include "runner.hpp"
-#include "file.hpp"
 
 using view::mainwindow;
 
@@ -42,9 +41,8 @@ void mainwindow::dragEnterEvent(QDragEnterEvent* e)
 void mainwindow::dropEvent(QDropEvent* e)
 {
 	foreach(const QUrl &url, e->mimeData()->urls()) {
-		QString file {url.toLocalFile()};
-		model::dal::append(file);
-		m_runners->add(model::runner {std::move(file)});
-		
+		QString filepath {url.toLocalFile()};
+		emit new_runner(filepath);
+		m_runners->add(std::move(filepath));
 	}
 }

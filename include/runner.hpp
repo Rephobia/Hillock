@@ -33,7 +33,7 @@ class view::runners : public QWidget
 {
 public:
 	runners();
-	void add(model::runner&& runner);
+	void add(QString&& path);
 	void run();
 protected:
 	QVBoxLayout* m_layout;
