@@ -19,11 +19,9 @@ view::runners* model::dal::read()
 		
 		while (std::getline(file, line)) {
 
-			QString string {QString::fromUtf8(line.c_str())};
-			runners->add(model::runner {std::move(string)});
-
+			runners->add(QString::fromUtf8(line.c_str()));
+			
 		}
-		
 	} else {
 		std::ofstream create_file {model::dal::FILE_NAME};
 		create_file.close();

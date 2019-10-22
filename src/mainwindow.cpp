@@ -44,7 +44,7 @@ void mainwindow::dropEvent(QDropEvent* e)
 	foreach(const QUrl &url, e->mimeData()->urls()) {
 		QString file {url.toLocalFile()};
 		model::dal::append(file);
-		m_runners->add(model::runner {std::move(file)});
+		m_runners->add(std::move(file));
 		
 	}
 }
