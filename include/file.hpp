@@ -17,11 +17,11 @@ namespace model::dal {
 	
 		if (file.is_open()) {
 		
-			std::string line {};
+			std::string filepath {};
 		
-			while (std::getline(file, line)) {
+			while (std::getline(file, filepath)) {
 
-				storage->add(QString::fromUtf8(line.c_str()));
+				storage->add(QString::fromUtf8(filepath.c_str()));
 			
 			}
 		} else {

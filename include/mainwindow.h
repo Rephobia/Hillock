@@ -23,7 +23,8 @@ namespace view
 
 
 class view::mainwindow : public QMainWindow
-{                          
+{
+	Q_OBJECT
 public:
 	mainwindow(view::runners* runners,
 	           QWidget* parent = nullptr);
@@ -32,6 +33,9 @@ public:
 	
 	void dragEnterEvent(QDragEnterEvent* e);
 	void dropEvent(QDropEvent* e);
+	
+signals:
+	void new_runner(const QString& filepath);
 private:
 	Ui::MainWindow* ui;
 	view::runners* m_runners;
