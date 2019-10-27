@@ -9,7 +9,7 @@
 int main(int argc, char* argv[])
 {
 	QApplication app {argc, argv};
-
+	QCoreApplication::addLibraryPath("./");
 	auto runners {new view::runners {}};
 	
 	model::dal::read(runners);
