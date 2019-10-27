@@ -1,14 +1,14 @@
 #include <QString>
 #include <QLabel>
-#include <QProcess>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QDesktopServices>
-#include <QUrl>
 #include <QFileInfo>
+
+
 #include "runner.hpp"
 #include "file.hpp"
 
+#include "process.hpp"
 
 using model::runner;
 
@@ -18,16 +18,11 @@ runner::runner(QString&& path)
 { ;}
 
 
-void runner::start(QObject* parent)
+void runner::start()
 {
-	if (m_path.contains(".ahk")) {
-		QDesktopServices::openUrl(QUrl::fromLocalFile(m_path));
-	}
-	else {
-		auto process {new QProcess {parent}};
-		process->start(m_path);	
-	}
+	process::start_process(m_path.toStdString());
 }
+
 const QString& runner::name_wd() const
 {
 	return m_name;
@@ -94,6 +89,6 @@ void runners::make_runner_widget(model::runner& runner)
 void runners::run()
 {
 	for (auto& e : m_runners) {
-		e.start(this);
+		e.start();
 	}
 }

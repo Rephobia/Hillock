@@ -1,5 +1,6 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QCoreApplication>
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
