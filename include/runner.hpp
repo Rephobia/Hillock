@@ -22,11 +22,13 @@ class model::runner
 public:
 	explicit runner(QString&& path);
 	
-	void start(QObject* parent);
-	
-	const QString& name() const;
+	void start();
+
+	const QString& name_wd() const;
+	const QString& path() const;
 	void change_path(QString&& path);
 protected:
+	QString m_name;
 	QString m_path;
 };
 
