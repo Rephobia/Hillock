@@ -1,35 +1,40 @@
 #include "file.hpp"
 
+
 void model::dal::append(const QString& filepath)
 {
-	std::ofstream file;
+	QFile file (model::dal::FILE_NAME);
 
-	file.open(model::dal::FILE_NAME, std::ios_base::app);
-	file << filepath.toStdString() << std::endl;
-	
-	file.close();
+	if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+
+		model::dal::filestream filestream {&file};
+		filestream << filepath << "\n";
+		
+		file.close();
+	}
 }
 
-void model::dal::remove(const std::string& filepath)
+void model::dal::remove(const QString& filepath)
 {
-	std::string temp_file {"temp_" + model::dal::FILE_NAME};
+	QFile file {model::dal::FILE_NAME};
 	
-	std::ifstream file {model::dal::FILE_NAME};
-	std::ofstream temp {temp_file};
-
-	if (file.is_open() and temp.is_open()) {
-		std::string curr_filepath {};
+	if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
 		
-		while (std::getline(file, curr_filepath)) {
+		QString buffer {};
+		
+		model::dal::filestream filestream {&file};
+		
+		while (not filestream.atEnd()) {
 			
-			if (curr_filepath != filepath) {
-				temp << curr_filepath << std::endl;
-			}
+			QString line {filestream.readLine()};
+			
+			if (not line.contains(filepath))
+				
+				buffer.append(line + "\n");
 		}
+		
+		file.resize(0);
+		filestream << buffer;
+		file.close();
 	}
-	temp.close();
-	file.close();
-	
-	::remove(model::dal::FILE_NAME.c_str());
-	::rename(temp_file.c_str(), model::dal::FILE_NAME.c_str());
 }
