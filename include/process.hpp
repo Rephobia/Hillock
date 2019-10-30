@@ -2,8 +2,13 @@
 #define HILLOCK_PROCESS_HPP
 
 
+namespace model {
+	class filepath;
+}
+
+
 namespace process {
-	void start_process(const std::string& path);
+	void start_process(const model::filepath& filepath);
 }
 
 

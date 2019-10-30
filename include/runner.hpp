@@ -4,33 +4,16 @@
 
 #include <list>
 
-#include <QVBoxLayout>
 #include <QWidget>
 
+#include "filepath.hpp"
 
-namespace model {
-	class runner;	
-}
+
+class QVBoxLayout;
 
 namespace view {
 	class runners;
 }
-
-
-class model::runner
-{
-public:
-	explicit runner(QString&& path);
-	
-	void start();
-
-	const QString& name_wd() const;
-	const QString& path() const;
-	void change_path(QString&& path);
-protected:
-	QString m_name;
-	QString m_path;
-};
 
 
 class view::runners : public QWidget
@@ -40,11 +23,11 @@ public:
 	void add(QString&& path);
 	void run();
 protected:
-	void make_runner_widget(model::runner& runner);
+	void make_runner_widget(model::filepath& filepath);
 	void remove_widget(QString&& path);
 protected:
 	QVBoxLayout* m_layout;
-	std::list<model::runner> m_runners;
+	std::list<model::filepath> m_runners;
 };
 
 

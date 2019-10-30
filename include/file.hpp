@@ -2,38 +2,49 @@
 #define HILLOCK_FILE_HPP
 
 
-#include <fstream>
-
 #include <QString>
+#include <QFile>
+#include <QTextStream>
 
 namespace model::dal {
 	
-	inline static const std::string FILE_NAME {"runners.txt"};
+	inline static const QString FILE_NAME {"runners.txt"};
 
+
+	class filestream : public QTextStream
+	{
+	public:
+		filestream(QFile *file)
+			: QTextStream {file}
+		{
+			setCodec("UTF-8");			
+		}
+	};
+
+	
 	template<typename T>
 	void read(T& storage)
 	{
-		std::ifstream file {model::dal::FILE_NAME};
-	
-		if (file.is_open()) {
-		
-			std::string filepath {};
-		
-			while (std::getline(file, filepath)) {
+		QFile file {model::dal::FILE_NAME};
 
-				storage->add(QString::fromUtf8(filepath.c_str()));
+		if (file.open(QIODevice::ReadOnly)) {
+
+			model::dal::filestream filestream {&file};
+
+			while (not filestream.atEnd()) {
 			
+				QString line {filestream.readLine()};
+			
+				storage->add(std::move(line));
+						
 			}
-		} else {
-			std::ofstream create_file {model::dal::FILE_NAME};
-			create_file.close();
+		
+			file.close();
 		}
-	
-		file.close();
 	}
 	
 	void append(const QString& filepath);
-	void remove(const std::string& filepath);
+	void remove(const QString& filepath);
 }
 
 
