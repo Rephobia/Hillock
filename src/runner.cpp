@@ -1,42 +1,12 @@
-#include <QString>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QFileInfo>
 
-
-#include "runner.hpp"
+#include "filepath.hpp"
 #include "file.hpp"
 
 #include "process.hpp"
-
-using model::runner;
-
-runner::runner(QString&& path)
-	: m_name {QFileInfo(path).fileName()}
-	, m_path {std::move(path)}
-{ ;}
-
-
-void runner::start()
-{
-	process::start_process(m_path.toStdString());
-}
-
-const QString& runner::name_wd() const
-{
-	return m_name;
-}
-const QString& runner::path() const
-{
-	return m_path;
-}
-
-void runner::change_path(QString&& path)
-{
-	m_path = std::move(path);
-}
-
+#include "runner.hpp"
 
 using view::runners;
 
@@ -47,35 +17,35 @@ runners::runners()
 
 void runners::add(QString&& path)
 {	
-	decltype(auto) runner {m_runners.emplace_back(model::runner {std::move(path)})};
+	decltype(auto) filepath {m_runners.emplace_back(model::filepath {std::move(path)})};
 
-	make_runner_widget(runner);
+	make_runner_widget(filepath);
 }
 
-void runners::make_runner_widget(model::runner& runner)
+void runners::make_runner_widget(model::filepath& filepath)
 {
 	auto widget {new QWidget {}};
-	widget->setObjectName(runner.path());
+	widget->setObjectName(filepath.path());
 	
 	auto runner_lay {new QHBoxLayout {widget}};
 
-	runner_lay->addWidget(new QLabel {runner.name_wd()});
+	runner_lay->addWidget(new QLabel {filepath.name()});
 
 	auto remove {new QPushButton {"remove"}};
 	
 	QObject::connect(remove, &QPushButton::clicked,
-	                 [this, &runner]()
+	                 [this, &filepath]()
 	                 {
-		                 model::dal::remove(runner.path().toStdString());
+		                 model::dal::remove(filepath.path());
 
-		                 auto lambda {[&runner](const model::runner& obj)
+		                 auto lambda {[&filepath](const model::filepath& obj)
 		                              {
-			                              return runner.path() == obj.path();
+			                              return filepath.path() == obj.path();
 		                              }};
 		                 
 		                 auto it {std::find_if(m_runners.begin(), m_runners.end(), lambda)};
 
-		                 auto widget {this->findChild<QWidget*>(runner.path())};
+		                 auto widget {this->findChild<QWidget*>(filepath.path())};
 		                 widget->hide();
 		                 widget->deleteLater();
 		                 m_runners.erase(it);
@@ -89,6 +59,6 @@ void runners::make_runner_widget(model::runner& runner)
 void runners::run()
 {
 	for (auto& e : m_runners) {
-		e.start();
+		process::start_process(e);
 	}
 }
