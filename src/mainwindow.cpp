@@ -6,6 +6,11 @@
 #include "./ui_mainwindow.h"
 
 #include "runner.hpp"
+#include "hotkey.hpp"
+
+
+#include <QKeyEvent>
+
 
 using view::mainwindow;
 
@@ -13,6 +18,7 @@ mainwindow::mainwindow(view::runners* runners,
                        QWidget* parent)
 	: QMainWindow {parent}
 	, ui          {new Ui::MainWindow {}}
+	, m_hotkey    {new view::hotkey {this}}
 	, m_runners   {runners}
 {
 	ui->setupUi(this);
@@ -24,12 +30,15 @@ mainwindow::mainwindow(view::runners* runners,
 	QObject::connect(ui->run_button, &QPushButton::clicked,
 	                 runners, &view::runners::run);
 
+
+	ui->key_layout->addWidget(m_hotkey);
+	
 	setAcceptDrops(true);
 }
 
 mainwindow::~mainwindow()
 {
-	delete ui;
+	delete ui;	
 }
 
 void mainwindow::dragEnterEvent(QDragEnterEvent* e)
@@ -46,4 +55,11 @@ void mainwindow::dropEvent(QDropEvent* e)
 		emit new_runner(filepath);
 		m_runners->add(std::move(filepath));
 	}
+}
+
+bool mainwindow::nativeEvent([[maybe_unused]] const QByteArray& eventType,
+                             void* message,
+                             [[maybe_unused]] long* result)
+{
+	return m_hotkey->check_button(message);
 }
