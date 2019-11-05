@@ -5,9 +5,9 @@
 #include "runner.hpp"
 #include "mainwindow.h"
 
-
 int main(int argc, char* argv[])
 {
+	
 	QApplication app {argc, argv};
 	QCoreApplication::addLibraryPath("./");
 	auto runners {new view::runners {}};
@@ -18,8 +18,6 @@ int main(int argc, char* argv[])
 
 	QObject::connect(&w, &view::mainwindow::new_runner,
 	                 model::dal::append);
-
-
 	
 	w.show();
 	

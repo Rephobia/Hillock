@@ -38,7 +38,7 @@
          <x>0</x>
          <y>0</y>
          <width>521</width>
-         <height>200</height>
+         <height>185</height>
         </rect>
        </property>
       </widget>
@@ -50,6 +50,17 @@
        <string>Run</string>
       </property>
      </widget>
+    </item>
+    <item row="1" column="1">
+     <layout class="QHBoxLayout" name="key_layout">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Quit button: </string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
