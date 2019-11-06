@@ -6,6 +6,7 @@
 #include "./ui_mainwindow.h"
 
 #include "runner.hpp"
+#include "keyedit.hpp"
 #include "hotkey.hpp"
 
 
@@ -18,7 +19,6 @@ mainwindow::mainwindow(view::runners* runners,
                        QWidget* parent)
 	: QMainWindow {parent}
 	, ui          {new Ui::MainWindow {}}
-	, m_hotkey    {new view::hotkey {this}}
 	, m_runners   {runners}
 {
 	ui->setupUi(this);
@@ -30,8 +30,15 @@ mainwindow::mainwindow(view::runners* runners,
 	QObject::connect(ui->run_button, &QPushButton::clicked,
 	                 runners, &view::runners::run);
 
-
-	ui->key_layout->addWidget(m_hotkey);
+	auto keyedit {new view::keyedit {}};
+	
+	QObject::connect(keyedit, QKeySequenceEdit::editingFinished,
+	                 [this, keyedit]()
+	                 {
+		                 hotkey::quit::register_button(this, keyedit->sequence());
+	                 });
+	
+	ui->key_layout->addWidget(keyedit);
 	
 	setAcceptDrops(true);
 }
@@ -61,5 +68,5 @@ bool mainwindow::nativeEvent([[maybe_unused]] const QByteArray& eventType,
                              void* message,
                              [[maybe_unused]] long* result)
 {
-	return m_hotkey->check_button(message);
+	return hotkey::check_button(message);
 }

@@ -1,33 +1,13 @@
 #include <windows.h>
-
-#include "hotkey.hpp"
 #include <QMessageBox>
 #include <QApplication>
 
-using view::hotkey;
+#include "hotkey.hpp"
 
-hotkey::hotkey(QWidget* parent)
-	: QKeySequenceEdit {parent}
-	, m_parent {parent}
-{
-	QObject::connect(this, &QKeySequenceEdit::editingFinished,
-	                 this, &hotkey::register_button);
-}
-
-void hotkey::register_button()
-{
-	UnregisterHotKey(HWND(m_parent->winId()), 100);
-	if (!RegisterHotKey(HWND(m_parent->winId()), 100, mod_key(keySequence()), hot_key(keySequence()))) {
-
-		QMessageBox::warning(m_parent, "Warning", "Can't register hotkey error: "
-		                     + QString::number(GetLastError()));
-
-	} 
-}
 
 bool hotkey::check_button(void* message)
 {
-	auto msg = static_cast<MSG*>(message);
+	auto msg {static_cast<MSG*>(message)};
 	
 	if (msg->message == WM_HOTKEY) {
 		QApplication::quit();
@@ -38,22 +18,12 @@ bool hotkey::check_button(void* message)
 }
 
 
-void hotkey::keyPressEvent(QKeyEvent *event)
-{
-	QKeySequenceEdit::keyPressEvent(event);
-    
-	QKeySequenceEdit::setKeySequence(keySequence()); // single key sequence
+namespace hotkey::detail {
+	unsigned int mod_key(const QKeySequence& sequence);
+	unsigned int hot_key(const QKeySequence& sequence);	
 }
 
-void hotkey::keyReleaseEvent([[maybe_unused]] QKeyEvent *event)
-{
-	emit QKeySequenceEdit::editingFinished();	
-	QWidget::clearFocus();
-}
-
-
-
-unsigned int hotkey::mod_key(const QKeySequence& sequence)
+unsigned int hotkey::detail::mod_key(const QKeySequence& sequence)
 {
 	QStringList list {sequence.toString().split("+")};
 	unsigned int mod {0};
@@ -79,7 +49,8 @@ unsigned int hotkey::mod_key(const QKeySequence& sequence)
 
 	return mod;
 }
-unsigned int hotkey::hot_key(const QKeySequence& sequence)
+
+unsigned int hotkey::detail::hot_key(const QKeySequence& sequence)
 {
 	QStringList list = sequence.toString().split("+");
 	char hotKey {0};
@@ -91,4 +62,24 @@ unsigned int hotkey::hot_key(const QKeySequence& sequence)
 	}
 
 	return hotKey;
+}
+
+
+
+void hotkey::quit::register_button(QWidget* mainwindow, const QKeySequence& sequence)
+{
+	auto winid {mainwindow->winId()};
+	
+	int hotkeyid {100};
+	
+	::UnregisterHotKey(HWND(winid), hotkeyid);
+	
+	if (not ::RegisterHotKey(HWND(winid), hotkeyid,
+	                         detail::mod_key(sequence),
+	                         detail::hot_key(sequence))) {
+
+		QMessageBox::warning(mainwindow, "Warning", "Can't register hotkey error: "
+		                     + QString::number(GetLastError()));
+
+	}
 }
