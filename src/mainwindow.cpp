@@ -15,7 +15,7 @@
 
 using view::mainwindow;
 
-mainwindow::mainwindow(view::runners* runners,
+mainwindow::mainwindow(view::runners* runners, QKeySequence&& quit,
                        QWidget* parent)
 	: QMainWindow {parent}
 	, ui          {new Ui::MainWindow {}}
@@ -37,6 +37,8 @@ mainwindow::mainwindow(view::runners* runners,
 	                 {
 		                 hotkey::quit::register_button(this, keyedit->sequence());
 	                 });
+	
+	keyedit->set_sequence(std::move(quit));
 	
 	ui->key_layout->addWidget(keyedit);
 	

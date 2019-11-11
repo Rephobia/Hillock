@@ -21,6 +21,7 @@ class view::mainwindow : public QMainWindow
 	Q_OBJECT
 public:
 	mainwindow(view::runners* runners,
+	           QKeySequence&& quit,
 	           QWidget* parent = nullptr);
 	
 	~mainwindow();
