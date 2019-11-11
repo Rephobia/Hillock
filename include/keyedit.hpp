@@ -13,6 +13,7 @@ class view::keyedit : public QKeySequenceEdit
 {
 public:
 	QKeySequence sequence();
+	void set_sequence(QKeySequence&& sequence);
 	void keyPressEvent(QKeyEvent* event);
 	void keyReleaseEvent(QKeyEvent* event);
 };

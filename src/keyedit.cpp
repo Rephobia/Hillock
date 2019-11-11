@@ -2,6 +2,13 @@
 
 using view::keyedit;
 
+
+void keyedit::set_sequence(QKeySequence&& sequence)
+{
+	QKeySequenceEdit::setKeySequence(std::move(sequence));
+	emit QKeySequenceEdit::editingFinished();
+}
+
 QKeySequence keyedit::sequence()
 {
 	return keySequence();

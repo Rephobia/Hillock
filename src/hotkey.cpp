@@ -82,4 +82,6 @@ void hotkey::quit::register_button(QWidget* mainwindow, const QKeySequence& sequ
 		                     + QString::number(GetLastError()));
 
 	}
+
+	emit bell::instance().reg_hotkey(sequence);
 }
