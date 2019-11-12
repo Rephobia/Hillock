@@ -11,6 +11,8 @@ namespace view {
 
 class view::keyedit : public QKeySequenceEdit
 {
+public:
+	keyedit();
 private:
 	void keyPressEvent(QKeyEvent* event);
 	void keyReleaseEvent(QKeyEvent* event);
