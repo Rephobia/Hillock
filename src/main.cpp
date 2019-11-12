@@ -1,6 +1,5 @@
 #include <QApplication>
 #include <QString>
-#include <QKeyEvent>
 
 #include "mapper.hpp"
 #include "runner.hpp"

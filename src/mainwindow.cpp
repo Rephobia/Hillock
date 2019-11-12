@@ -8,7 +8,6 @@
 #include "runner.hpp"
 #include "keyedit.hpp"
 #include "hotkey.hpp"
-#include "moc_keyedit.cpp"
 
 #include <QKeyEvent>
 
@@ -35,7 +34,6 @@ mainwindow::mainwindow(view::runners* runners)
 		                 emit quit_edited(m_quit_keyedit->keySequence());
 	                 });
 
-	
 	ui->key_layout->addWidget(m_quit_keyedit);
 	
 	setAcceptDrops(true);
