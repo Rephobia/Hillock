@@ -11,14 +11,10 @@ namespace view {
 
 class view::keyedit : public QKeySequenceEdit
 {
-public:
-	QKeySequence sequence();
-	void set_sequence(QKeySequence&& sequence);
+private:
 	void keyPressEvent(QKeyEvent* event);
 	void keyReleaseEvent(QKeyEvent* event);
 };
-
-
 
 
 #endif // HILLOCK_KEYEDIT_HPP
