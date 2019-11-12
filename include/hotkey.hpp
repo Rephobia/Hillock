@@ -7,30 +7,25 @@ class QKeySequence;
 
 
 namespace hotkey {
+	
+	class quit;
+	
 	bool check_button(void* message);
 }
 
-namespace hotkey::quit {
-	void register_button(QWidget* mainwindow, const QKeySequence& sequence);
-
-	class bell : public QObject
-	{
-		Q_OBJECT
-	public:
-		bell(const bell&) = delete;
-		bell& operator= (const bell&) = delete;
-		
-		static bell& instance()
-		{
-			static bell b {};
-			return b;
-		}
-	signals:
-		void reg_hotkey(const QKeySequence& sequence);
-	private:
-		bell() = default;
-		~bell() = default;
-	};
-}
+class hotkey::quit : public QObject
+{
+	Q_OBJECT
+public:
+	quit(QWidget* mainwindow);
+	const QKeySequence& sequence() const;
+	void register_key(const QKeySequence& sequence);
+signals:
+	void registered(const QKeySequence& sequence);
+protected:
+	QKeySequence m_sequence;
+	QWidget* m_mainwindow;
+	int m_keyid {100};
+};
 
 #endif // HILLOCK_HOTKEY_HPP

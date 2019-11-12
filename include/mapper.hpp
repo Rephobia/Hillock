@@ -1,11 +1,9 @@
-#ifndef HILLOCK_FILE_HPP
-#define HILLOCK_FILE_HPP
+#ifndef HILLOCK_MAPPER_HPP
+#define HILLOCK_MAPPER_HPP
 
 
 #include <QString>
 #include <QJsonObject>
-
-class QKeySequence;
 
 namespace model {
 	class runners;
@@ -15,11 +13,15 @@ namespace data {
 	class mapper;
 }
 
+namespace hotkey {
+	class quit;
+}
+
 
 class data::mapper
 {
 public:
-	void read(model::runners* runners, QKeySequence& quithotkey);
+	void read(model::runners* runners, hotkey::quit& quithotkey);
 	void append_runner(const QString& filepath);
 	void set_quithotkey(const QKeySequence& quithotkey);
 	
@@ -35,4 +37,4 @@ protected:
 };
 
 
-#endif // HILLOCK_FILE_HPP
+#endif // HILLOCK_MAPPER_HPP

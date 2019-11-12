@@ -6,11 +6,11 @@
 
 #include "mapper.hpp"
 #include "runner.hpp"
-
+#include "hotkey.hpp"
 
 using data::mapper;
 
-void mapper::read(model::runners* runners, QKeySequence& quithotkey)
+void mapper::read(model::runners* runners, hotkey::quit& quithotkey)
 {
 	QFile file {mapper::FILE_NAME};
 
@@ -32,7 +32,7 @@ void mapper::read(model::runners* runners, QKeySequence& quithotkey)
 				QJsonObject::iterator quit {jobject.find(mapper::QUIT)};
 
 				if (quit != jobject.end()) {
-					quithotkey = quit->toString();
+					quithotkey.register_key(quit.value().toString());
 				}
 
 				m_jobject = std::move(jobject);

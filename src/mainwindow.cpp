@@ -8,18 +8,17 @@
 #include "runner.hpp"
 #include "keyedit.hpp"
 #include "hotkey.hpp"
-
+#include "moc_keyedit.cpp"
 
 #include <QKeyEvent>
 
 
 using view::mainwindow;
 
-mainwindow::mainwindow(view::runners* runners, QKeySequence&& quit,
-                       QWidget* parent)
-	: QMainWindow {parent}
-	, ui          {new Ui::MainWindow {}}
-	, m_runners   {runners}
+mainwindow::mainwindow(view::runners* runners)
+	: m_runners      {runners}
+	, m_quit_keyedit {new view::keyedit {}}
+	, ui             {new Ui::MainWindow {}}
 {
 	ui->setupUi(this);
 	QMainWindow::setWindowTitle("Hillock"); // this line have to be after ui->setupUi(this)
@@ -30,17 +29,14 @@ mainwindow::mainwindow(view::runners* runners, QKeySequence&& quit,
 	QObject::connect(ui->run_button, &QPushButton::clicked,
 	                 runners, &view::runners::run);
 
-	auto keyedit {new view::keyedit {}};
-	
-	QObject::connect(keyedit, QKeySequenceEdit::editingFinished,
-	                 [this, keyedit]()
+	QObject::connect(m_quit_keyedit, &QKeySequenceEdit::editingFinished,
+	                 [this]()
 	                 {
-		                 hotkey::quit::register_button(this, keyedit->sequence());
+		                 emit quit_edited(m_quit_keyedit->keySequence());
 	                 });
+
 	
-	keyedit->set_sequence(std::move(quit));
-	
-	ui->key_layout->addWidget(keyedit);
+	ui->key_layout->addWidget(m_quit_keyedit);
 	
 	setAcceptDrops(true);
 }
@@ -48,6 +44,11 @@ mainwindow::mainwindow(view::runners* runners, QKeySequence&& quit,
 mainwindow::~mainwindow()
 {
 	delete ui;	
+}
+
+void mainwindow::set_quithotkey(const QKeySequence& quithotkey)
+{
+	m_quit_keyedit->setKeySequence(quithotkey);
 }
 
 void mainwindow::dragEnterEvent(QDragEnterEvent* e)

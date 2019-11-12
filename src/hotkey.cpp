@@ -19,69 +19,92 @@ bool hotkey::check_button(void* message)
 
 
 namespace hotkey::detail {
+
+	struct modkey
+	{
+		unsigned int mod {0};
+		unsigned int key {0};
+	};
+
 	unsigned int mod_key(const QKeySequence& sequence);
-	unsigned int hot_key(const QKeySequence& sequence);	
+	unsigned int hot_key(const QKeySequence& sequence);
+
+	modkey parse(const QKeySequence& sequence);
+	modkey parse(QKeyEvent* event, QKeySequence& sequence);
+	bool register_key(QWidget* window, int keyid, modkey modkey);
+	                  
+
 }
 
-unsigned int hotkey::detail::mod_key(const QKeySequence& sequence)
-{
-	QStringList list {sequence.toString().split("+")};
-	unsigned int mod {0};
- 	
-	foreach (QString str, list) {
-		if (str == "Ctrl"){
-			
-			mod += MOD_CONTROL;
-			continue;
-			
-		} else if (str == "Alt") {
-			
-			mod += MOD_ALT;
-			continue;
-
-		} else if (str == "Shift") {
-			
-			mod += MOD_SHIFT; 
-			continue;
-
-		}
-	}
-
-	return mod;
-}
-
-unsigned int hotkey::detail::hot_key(const QKeySequence& sequence)
-{
-	QStringList list = sequence.toString().split("+");
-	char hotKey {0};
- 
-	foreach (QString str, list) {
-		if (str != "Ctrl" && str != "Alt" && str != "Shift") {
-			hotKey = str.at(0).unicode();
-		}
-	}
-
-	return hotKey;
-}
-
-
-
-void hotkey::quit::register_button(QWidget* mainwindow, const QKeySequence& sequence)
+bool hotkey::detail::register_key(QWidget* mainwindow, int keyid,
+                                  hotkey::detail::modkey modkey)
 {
 	auto winid {mainwindow->winId()};
 	
-	int hotkeyid {100};
-	
-	::UnregisterHotKey(HWND(winid), hotkeyid);
-	
-	if (not ::RegisterHotKey(HWND(winid), hotkeyid,
-	                         detail::mod_key(sequence),
-	                         detail::hot_key(sequence))) {
+	::UnregisterHotKey(HWND(winid), keyid);
 
-		QMessageBox::warning(mainwindow, "Warning", "Can't register hotkey error: "
+	return ::RegisterHotKey(HWND(winid), keyid, modkey.mod, modkey.key);
+}
+
+hotkey::detail::modkey hotkey::detail::parse(const QKeySequence& sequence)
+{
+	hotkey::detail::modkey modkey {};
+	QStringList list = sequence.toString().split("+");
+	
+	for (auto& str : list) {
+		
+		bool iskey = true;
+		
+		if (str == "Ctrl") {
+			modkey.mod += MOD_CONTROL;
+			iskey = false;
+		}
+		if (str == "Alt") {			
+			modkey.mod += MOD_ALT;
+			iskey = false;
+		}
+		if (str == "Shift") {
+			modkey.mod += MOD_SHIFT;
+			iskey = false;
+		}
+		
+		if (iskey) {
+			modkey.key = str.at(0).unicode();
+		}
+	}
+	
+	return modkey;
+}
+
+
+using hotkey::quit;
+
+quit::quit(QWidget* mainwindow)
+	: m_mainwindow {mainwindow}
+{ ;}
+
+const QKeySequence& quit::sequence() const
+{
+	return m_sequence;
+}
+
+void quit::register_key(const QKeySequence& sequence)
+{
+	if (m_sequence == sequence) {
+		return;
+	}
+	
+	detail::modkey modkey {detail::parse(sequence)};
+	
+	if (detail::register_key(m_mainwindow, m_keyid, modkey)) {
+	
+		emit registered(sequence);
+	}
+	else {
+		QMessageBox::warning(m_mainwindow, "Warning", "Can't register hotkey error: "
 		                     + QString::number(GetLastError()));
-
 	}
 
-	emit bell::instance().reg_hotkey(sequence);
+	m_sequence = sequence;
 }
+
