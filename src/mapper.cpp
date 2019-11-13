@@ -3,42 +3,63 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QKeySequence>
+#include <QMessageBox>
 
 #include "mapper.hpp"
 #include "runner.hpp"
 #include "hotkey.hpp"
 
+
 using data::mapper;
+
+mapper::mapper(QWidget* mainwindow)
+	: m_mainwindow {mainwindow}
+{ ;}
 
 void mapper::read(model::runners* runners, hotkey::quit& quithotkey)
 {
 	QFile file {mapper::FILE_NAME};
 
-	if (file.open(QIODevice::ReadOnly)) {
-				
-		QJsonParseError parse_error;
-		QJsonDocument document {QJsonDocument::fromJson(file.readAll(), &parse_error)};
-		
-		if (parse_error.error == QJsonParseError::NoError) {
-				
-			if (document.isObject()) {
-					
-				QJsonObject jobject {document.object()};
-		
-				for (QJsonValueRef e : jobject[mapper::RUNNERS].toArray()) {
-					runners->add(e.toString());
-				}
-
-				QJsonObject::iterator quit {jobject.find(mapper::QUIT)};
-
-				if (quit != jobject.end()) {
-					quithotkey.register_key(quit.value().toString());
-				}
-
-				m_jobject = std::move(jobject);
-			}
-		}
+	if (not file.open(QIODevice::ReadOnly)) {
+		QMessageBox::critical(m_mainwindow, "mapper::read", "Can't open the file "
+		                      + mapper::FILE_NAME);
+		return;
 	}
+	
+	QJsonParseError parse_error;
+	QJsonDocument document {QJsonDocument::fromJson(file.readAll(), &parse_error)};
+		
+	if (parse_error.error != QJsonParseError::NoError) {
+
+		QMessageBox::critical(m_mainwindow, "mapper::read", "parse error "
+		                      + mapper::FILE_NAME + ": " + parse_error.errorString());
+		return;
+	}
+	
+	if (not document.isObject()) {
+		QMessageBox::critical(m_mainwindow, "mapper::read", "parse error "
+		                      + mapper::FILE_NAME + " isn't object");
+		return;
+	}
+
+	mapper::read(document, runners, quithotkey);
+}
+
+void mapper::read(const QJsonDocument& document, model::runners* runners, hotkey::quit& quithotkey)
+{
+	QJsonObject jobject {document.object()};
+		
+	for (QJsonValueRef e : jobject[mapper::RUNNERS].toArray()) {
+		runners->add(e.toString());
+	}
+
+	QJsonObject::iterator quit {jobject.find(mapper::QUIT)};
+
+	if (quit != jobject.end()) {
+		quithotkey.register_key(quit.value().toString());
+	}
+
+	m_jobject = std::move(jobject);		
 }
 
 void mapper::append_runner(const QString& filepath)
@@ -52,7 +73,7 @@ void mapper::append_runner(const QString& filepath)
 		// Be careful, you must not use uniform init for QJsonArray {QJsonValue.toArray()}.
 		// Use assign QJsonarray = QJsonValue::toArray();
 		// this is GCC bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92400
-		// Qt bugtracker https://bit.ly/2O0YQmN
+		// Qt bugtracker https://bugreports.qt.io/browse/QTBUG-79780
 		
 		QJsonArray runners = runners_it->toArray();
 
@@ -66,9 +87,7 @@ void mapper::append_runner(const QString& filepath)
 
 	}
 
-	mapper::write(m_jobject, new_jobject);
-
-
+	mapper::write(m_jobject, std::move(new_jobject));
 }
 
 void mapper::remove_runner(const QString& filepath)
@@ -97,21 +116,24 @@ void mapper::remove_runner(const QString& filepath)
 		}
 	}
 	
-	write(m_jobject, new_jobject);
+	mapper::write(m_jobject, std::move(new_jobject));
 }
 
-void mapper::write(QJsonObject& old_object, const QJsonObject& new_object)
+void mapper::write(QJsonObject& old_object, QJsonObject&& new_object)
 {
 	QFile file {mapper::FILE_NAME};
 
 	if (file.open(QIODevice::WriteOnly)) {
-		
+
 		file.resize(0);
 		file.write(QJsonDocument(new_object).toJson(QJsonDocument::Indented));
-		file.close();
 		
-		old_object = new_object;
-		
+		old_object = std::move(new_object);
+	}
+	else {
+		QMessageBox::critical(m_mainwindow, "mapper::write", "Can't write the file "
+		                      + mapper::FILE_NAME);
+
 	}
 }
 void mapper::set_quithotkey(const QKeySequence& quithotkey)
@@ -126,6 +148,5 @@ void mapper::set_quithotkey(const QKeySequence& quithotkey)
 		new_jobject.insert(mapper::QUIT, QJsonValue {quithotkey.toString()});
 	}
 	
-	write(m_jobject, new_jobject);
-	
+	mapper::write(m_jobject, std::move(new_jobject));
 }
