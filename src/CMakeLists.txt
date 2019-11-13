@@ -10,7 +10,9 @@ SET(GUI_TYPE WIN32)
 ENDIF(WIN32)
 
 file(GLOB_RECURSE sources ${PROJECT_SOURCE_DIR} "*.cpp")
-file(GLOB_RECURSE headers "${HILLOCK_INCLUDE_DIRECTORY}/*.h")
+file(GLOB_RECURSE headers
+    "${HILLOCK_INCLUDE_DIRECTORY}/*.h"
+    "${HILLOCK_INCLUDE_DIRECTORY}/*.hpp")
 
 add_executable(${PROJECT_NAME} ${GUI_TYPE} ${sources} ${headers})
 

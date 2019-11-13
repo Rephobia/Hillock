@@ -2,11 +2,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QKeySequence>
 #include <QMessageBox>
 
 #include "mapper.hpp"
-#include "runner.hpp"
+#include "runners.hpp"
 #include "hotkey.hpp"
 
 
