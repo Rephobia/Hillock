@@ -2,14 +2,12 @@
 #include <QMimeData>
 #include <QCoreApplication>
 
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "view/mainwindow.h"
+#include "./view/ui_mainwindow.h"
+#include "view/keyedit.hpp"
 
 #include "runner.hpp"
-#include "keyedit.hpp"
 #include "hotkey.hpp"
-
-#include <QKeyEvent>
 
 
 using view::mainwindow;
