@@ -5,7 +5,7 @@
 #include "runner.hpp"
 #include "moc_runner.cpp"
 #include "moc_hotkey.cpp"
-#include "mainwindow.h"
+#include "view/mainwindow.h"
 
 
 int main(int argc, char* argv[])
