@@ -97,7 +97,7 @@ void quit::register_key(const QKeySequence& sequence)
 	detail::modkey modkey {detail::parse(sequence)};
 	
 	if (detail::register_key(m_mainwindow, m_keyid, modkey)) {
-	
+
 		emit registered(sequence);
 	}
 	else {
