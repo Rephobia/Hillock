@@ -2,18 +2,17 @@
 #include <QString>
 
 #include "mapper.hpp"
-#include "runner.hpp"
-#include "moc_runner.cpp"
-#include "moc_hotkey.cpp"
+#include "view/runners_decorator.hpp"
 #include "view/mainwindow.h"
 
+#include "hotkey.hpp"
 
 int main(int argc, char* argv[])
 {	
 	QApplication app {argc, argv};
 	QCoreApplication::addLibraryPath("./");
 
-	auto runners {new view::runners {}};
+	auto runners {new view::runners_decorator {}};
 
 	view::mainwindow mainwindow {runners};
 	
@@ -26,7 +25,7 @@ int main(int argc, char* argv[])
 		                 mapper.append_runner(filepath);
 	                 });
 
-	QObject::connect(runners, &view::runners::remove_runner,
+	QObject::connect(runners, &view::runners_decorator::remove_runner,
 	                 [&mapper](const QString& filepath)
 	                 {
 		                 mapper.remove_runner(filepath);

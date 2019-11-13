@@ -2,41 +2,16 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
-#include "filepath.hpp"
+#include "view/runners_decorator.hpp"
 
-#include "process.hpp"
-#include "runner.hpp"
+using view::runners_decorator;
 
-
-model::filepath& model::runners::add(QString&& path)
-{
-	model::filepath filepath {std::move(path)};
-	
-	return m_runners.emplace_back(filepath);	
-}
-
-void model::runners::remove(const model::filepath& filepath)
-{
-	auto lambda {[&filepath](const model::filepath& obj)
-	             {
-		             return filepath.path() == obj.path();
-	             }};
-	
-	auto it {std::find_if(m_runners.begin(), m_runners.end(), lambda)};
-
-	if (it != m_runners.end()) {
-		m_runners.erase(it);
-	}
-}
-
-using view::runners;
-
-runners::runners()
+runners_decorator::runners_decorator()
 	: m_layout {new QVBoxLayout {this}}
 { ;}
 
 
-model::filepath& runners::add(QString&& path)
+model::filepath& runners_decorator::add(QString&& path)
 {
 	model::filepath& filepath {model::runners::add(std::move(path))};
 
@@ -45,7 +20,7 @@ model::filepath& runners::add(QString&& path)
 	return filepath;
 }
 
-void runners::make_runner_widget(model::filepath& filepath)
+void runners_decorator::make_runner_widget(model::filepath& filepath)
 {
 	auto widget {new QWidget {}};
 	widget->setObjectName(filepath.path());
@@ -72,11 +47,4 @@ void runners::make_runner_widget(model::filepath& filepath)
 	runner_lay->addWidget(remove);
 
 	m_layout->addWidget(widget);
-}
-
-void runners::run()
-{
-	for (auto& e : m_runners) {
-		process::start_process(e);
-	}
 }
