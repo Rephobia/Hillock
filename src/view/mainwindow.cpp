@@ -1,32 +1,29 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
-#include <QCoreApplication>
 
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "view/mainwindow.h"
+#include "./view/ui_mainwindow.h"
+#include "view/keyedit.hpp"
+#include "view/runners_decorator.hpp"
 
-#include "runner.hpp"
-#include "keyedit.hpp"
 #include "hotkey.hpp"
-
-#include <QKeyEvent>
 
 
 using view::mainwindow;
 
-mainwindow::mainwindow(view::runners* runners)
+mainwindow::mainwindow(view::runners_decorator* runners)
 	: m_runners      {runners}
 	, m_quit_keyedit {new view::keyedit {}}
 	, ui             {new Ui::MainWindow {}}
 {
 	ui->setupUi(this);
-	QMainWindow::setWindowTitle("Hillock"); // this line have to be after ui->setupUi(this)
+	QMainWindow::setWindowTitle(QStringLiteral("Hillock")); // this line have to be after ui->setupUi(this)
 
 	ui->scrollArea->setWidget(m_runners);
 	ui->scrollArea->setWidgetResizable(true);
 	
 	QObject::connect(ui->run_button, &QPushButton::clicked,
-	                 runners, &view::runners::run);
+	                 [this]() { m_runners->run(); });
 
 	QObject::connect(m_quit_keyedit, &QKeySequenceEdit::editingFinished,
 	                 [this]()

@@ -1,14 +1,13 @@
 #include <QKeyEvent>
-#include <QLayout>
 
-#include "keyedit.hpp"
+#include "view/keyedit.hpp"
+
 
 using view::keyedit;
 
 keyedit::keyedit()
 {
 	this->setFixedWidth(90);
-	layout()->setAlignment(layout(), Qt::AlignHCenter);
 }
 void keyedit::keyPressEvent(QKeyEvent* event)
 {

@@ -1,5 +1,5 @@
-#ifndef HILLOCK_KEYEDIT_HPP
-#define HILLOCK_KEYEDIT_HPP
+#ifndef HILLOCK_VIEW_KEYEDIT_HPP
+#define HILLOCK_VIEW_KEYEDIT_HPP
 
 
 #include <QKeySequenceEdit>
@@ -19,4 +19,4 @@ private:
 };
 
 
-#endif // HILLOCK_KEYEDIT_HPP
+#endif // HILLOCK_VIEW_KEYEDIT_HPP
