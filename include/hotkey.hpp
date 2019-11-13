@@ -2,9 +2,11 @@
 #define HILLOCK_HOTKEY_HPP
 
 
+#include <QKeySequence>
+#include <QObject>
+
 class QWidget;
 class QKeySequence;
-
 
 namespace hotkey {
 	

@@ -1,5 +1,5 @@
-#ifndef HILLOCK_MAINWINDOW_HPP
-#define HILLOCK_MAINWINDOW_HPP
+#ifndef HILLOCK_VIEW_MAINWINDOW_HPP
+#define HILLOCK_VIEW_MAINWINDOW_HPP
 
 
 #include <QMainWindow>
@@ -12,7 +12,7 @@ namespace Ui
 namespace view
 {
 	class mainwindow;
-	class runners;
+	class runners_decorator;
 	class keyedit;
 }
 
@@ -21,7 +21,7 @@ class view::mainwindow : public QMainWindow
 {
 	Q_OBJECT
 public:
-	mainwindow(view::runners* runners);
+	mainwindow(view::runners_decorator* runners);
 
 	void set_quithotkey(const QKeySequence& quithotkey);
 	
@@ -35,12 +35,11 @@ signals:
 	void new_runner(const QString& filepath);
 	void quit_edited(const QKeySequence& quithotkey);
 protected:
-	view::runners* m_runners;
+	view::runners_decorator* m_runners;
 	view::keyedit* m_quit_keyedit;
 private:
 	Ui::MainWindow* ui;
 	
 };
 
-
-#endif // HILLOCK_MAINWINDOW_HPP
+#endif // HILLOCK_VIEW_MAINWINDOW_HPP
