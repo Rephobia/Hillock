@@ -14,7 +14,9 @@ file(GLOB_RECURSE headers
     "${HILLOCK_INCLUDE_DIRECTORY}/*.h"
     "${HILLOCK_INCLUDE_DIRECTORY}/*.hpp")
 
-add_executable(${PROJECT_NAME} ${GUI_TYPE} ${sources} ${headers})
+add_executable(${PROJECT_NAME} ${GUI_TYPE} ${sources} ${headers}
+               ${CMAKE_SOURCE_DIR}/resources/win_resources.rc
+               ${CMAKE_SOURCE_DIR}/resources/qt_resources.qrc)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
