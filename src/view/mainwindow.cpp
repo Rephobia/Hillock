@@ -1,10 +1,12 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QSystemTrayIcon>
 
 #include "view/mainwindow.h"
 #include "./view/ui_mainwindow.h"
 #include "view/keyedit.hpp"
 #include "view/runners_decorator.hpp"
+#include "view/tray.hpp"
 
 #include "hotkey.hpp"
 
@@ -23,7 +25,11 @@ mainwindow::mainwindow(view::runners_decorator* runners)
 	ui->scrollArea->setWidgetResizable(true);
 	
 	QObject::connect(ui->run_button, &QPushButton::clicked,
-	                 [this]() { m_runners->run(); });
+	                 [this]()
+	                 {
+		                 m_runners->run();
+		                 QWidget::hide();
+	                 });
 
 	QObject::connect(m_quit_keyedit, &QKeySequenceEdit::editingFinished,
 	                 [this]()
@@ -32,13 +38,49 @@ mainwindow::mainwindow(view::runners_decorator* runners)
 	                 });
 
 	ui->key_layout->addWidget(m_quit_keyedit);
+
+	auto tray {new view::tray {this}};
 	
+	QObject::connect(tray, &view::tray::triggered,
+	                 this, &view::mainwindow::toggle_show);
+
+	QObject::connect(tray->quit, &QAction::triggered,
+	                 this, &QWidget::close);
+	QObject::connect(tray->restore, &QAction::triggered,
+	                 this, &QWidget::show);
+		
 	setAcceptDrops(true);
 }
 
 mainwindow::~mainwindow()
 {
-	delete ui;	
+	delete ui;
+}
+
+void mainwindow::toggle_show()
+{
+	if (QWidget::isVisible()) {
+		QWidget::hide();
+	}
+	else {
+		QWidget::activateWindow();
+		QWidget::show();
+	}
+}
+
+void mainwindow::changeEvent(QEvent* event)
+{
+	if (event->type() == QEvent::WindowStateChange) {
+
+		if (QWidget::isMinimized()) {
+			QWidget::showNormal(); // without it windows doesn't show, after minimize;
+			QWidget::hide();
+			event->ignore();
+		}
+
+	}
+	
+	QMainWindow::changeEvent(event);
 }
 
 void mainwindow::set_quithotkey(const QKeySequence& quithotkey)
