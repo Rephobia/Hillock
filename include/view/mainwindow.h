@@ -35,7 +35,6 @@ public:
 	void toggle_show();
 	void changeEvent(QEvent* event);
 signals:
-	void new_runner(const QString& filepath);
 	void quit_edited(const QKeySequence& quithotkey);
 protected:
 	view::runners_decorator* m_runners;

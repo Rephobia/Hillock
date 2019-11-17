@@ -22,6 +22,7 @@ public:
 	runners_decorator();
 	model::filepath& add(QString&& path) override;
 signals:
+	void new_runner(const QString& filepath);
 	void remove_runner(const QString& filepath);
 protected:
 	void make_runner_widget(model::filepath& filepath);
