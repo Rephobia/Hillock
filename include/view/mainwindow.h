@@ -22,8 +22,6 @@ class view::mainwindow : public QMainWindow
 	Q_OBJECT
 public:
 	mainwindow(view::runners_decorator* runners);
-
-	void set_quithotkey(const QKeySequence& quithotkey);
 	
 	~mainwindow();
 	
@@ -34,12 +32,11 @@ public:
 	
 	void toggle_show();
 	void changeEvent(QEvent* event);
-signals:
-	void quit_edited(const QKeySequence& quithotkey);
+	
+	view::keyedit* quit_keyedit;
 protected:
 	view::runners_decorator* m_runners;
 private:
-	view::keyedit* m_quit_keyedit;
 	Ui::MainWindow* ui;
 	
 };
