@@ -31,13 +31,16 @@ public:
 	void dropEvent(QDropEvent* e);
 
 	bool nativeEvent(const QByteArray& eventType, void* message, long* result);
+	
+	void toggle_show();
+	void changeEvent(QEvent* event);
 signals:
 	void new_runner(const QString& filepath);
 	void quit_edited(const QKeySequence& quithotkey);
 protected:
 	view::runners_decorator* m_runners;
-	view::keyedit* m_quit_keyedit;
 private:
+	view::keyedit* m_quit_keyedit;
 	Ui::MainWindow* ui;
 	
 };
