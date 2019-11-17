@@ -19,6 +19,10 @@ void mapper::read(model::runners* runners, hotkey::quit& quithotkey)
 {
 	QFile file {mapper::FILE_NAME};
 
+	if (not file.exists()) {
+		return;
+	}
+	
 	if (not file.open(QIODevice::ReadOnly)) {
 		QMessageBox::critical(m_mainwindow, "mapper::read", "Can't open the file "
 		                      + mapper::FILE_NAME);
