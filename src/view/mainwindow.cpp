@@ -13,31 +13,24 @@
 
 using view::mainwindow;
 
-mainwindow::mainwindow(view::runners_decorator* runners)
-	: m_runners      {runners}
-	, m_quit_keyedit {new view::keyedit {}}
-	, ui             {new Ui::MainWindow {}}
+mainwindow::mainwindow()
+	: runners      {new view::runners_decorator {}}
+	, quit_keyedit {new view::keyedit {}}
+	, ui           {new Ui::MainWindow {}}
 {
 	ui->setupUi(this);
 	QMainWindow::setWindowTitle(QStringLiteral("Hillock")); // this line have to be after ui->setupUi(this)
 
-	ui->scrollArea->setWidget(m_runners);
+	ui->scrollArea->setWidget(runners);
 	ui->scrollArea->setWidgetResizable(true);
+	ui->key_layout->addWidget(quit_keyedit);
 	
 	QObject::connect(ui->run_button, &QPushButton::clicked,
 	                 [this]()
 	                 {
-		                 m_runners->run();
+		                 runners->run();
 		                 QWidget::hide();
 	                 });
-
-	QObject::connect(m_quit_keyedit, &QKeySequenceEdit::editingFinished,
-	                 [this]()
-	                 {
-		                 emit quit_edited(m_quit_keyedit->keySequence());
-	                 });
-
-	ui->key_layout->addWidget(m_quit_keyedit);
 
 	auto tray {new view::tray {this}};
 	
@@ -77,16 +70,11 @@ void mainwindow::changeEvent(QEvent* event)
 			QWidget::hide();
 			event->ignore();
 		}
-
 	}
 	
 	QMainWindow::changeEvent(event);
 }
 
-void mainwindow::set_quithotkey(const QKeySequence& quithotkey)
-{
-	m_quit_keyedit->setKeySequence(quithotkey);
-}
 
 void mainwindow::dragEnterEvent(QDragEnterEvent* e)
 {
@@ -99,8 +87,7 @@ void mainwindow::dropEvent(QDropEvent* e)
 {
 	foreach(const QUrl &url, e->mimeData()->urls()) {
 		QString filepath {url.toLocalFile()};
-		emit new_runner(filepath);
-		m_runners->add(std::move(filepath));
+		runners->add(std::move(filepath));
 	}
 }
 

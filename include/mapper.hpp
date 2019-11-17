@@ -18,8 +18,9 @@ namespace hotkey {
 }
 
 
-class data::mapper
+class data::mapper : public QObject
 {
+	Q_OBJECT
 public:
 	mapper(QWidget* mainwindow);
 	

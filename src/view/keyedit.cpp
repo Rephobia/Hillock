@@ -12,12 +12,12 @@ keyedit::keyedit()
 void keyedit::keyPressEvent(QKeyEvent* event)
 {
 	QKeySequenceEdit::keyPressEvent(event);    
-	QKeySequenceEdit::setKeySequence(keySequence()); // single key sequence
+	QKeySequenceEdit::setKeySequence(QKeySequenceEdit::keySequence()); // single key sequence
 }
 
 void keyedit::keyReleaseEvent(QKeyEvent* event)
 {
 	QKeySequenceEdit::keyReleaseEvent(event);
-	emit editingFinished();
+	emit key_edited(QKeySequenceEdit::keySequence());
 	QWidget::clearFocus();
 }
