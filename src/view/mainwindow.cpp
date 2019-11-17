@@ -99,7 +99,6 @@ void mainwindow::dropEvent(QDropEvent* e)
 {
 	foreach(const QUrl &url, e->mimeData()->urls()) {
 		QString filepath {url.toLocalFile()};
-		emit new_runner(filepath);
 		m_runners->add(std::move(filepath));
 	}
 }

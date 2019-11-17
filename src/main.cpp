@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	hotkey::quit quitkey {&mainwindow};
 	data::mapper mapper {&mainwindow};
 	
-	QObject::connect(&mainwindow, &view::mainwindow::new_runner,
+	QObject::connect(runners, &view::runners_decorator::new_runner,
 	                 [&mapper](const QString& filepath)
 	                 {
 		                 mapper.append_runner(filepath);

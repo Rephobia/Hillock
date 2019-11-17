@@ -13,6 +13,8 @@ runners_decorator::runners_decorator()
 
 model::filepath& runners_decorator::add(QString&& path)
 {
+	emit new_runner(path);
+	
 	model::filepath& filepath {model::runners::add(std::move(path))};
 
 	make_runner_widget(filepath);
