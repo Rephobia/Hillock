@@ -21,28 +21,16 @@ int main(int argc, char* argv[])
 	data::mapper mapper {&mainwindow};
 	
 	QObject::connect(runners, &view::runners_decorator::new_runner,
-	                 [&mapper](const QString& filepath)
-	                 {
-		                 mapper.append_runner(filepath);
-	                 });
+	                 &mapper, &data::mapper::append_runner);
 
 	QObject::connect(runners, &view::runners_decorator::remove_runner,
-	                 [&mapper](const QString& filepath)
-	                 {
-		                 mapper.remove_runner(filepath);
-	                 });
-	
+	                 &mapper, &data::mapper::remove_runner);
+
 	QObject::connect(&quitkey, &hotkey::quit::registered,
-	                 [&mapper](const QKeySequence& sequence)
-	                 {
-		                 mapper.set_quithotkey(sequence);
-	                 });
+	                 &mapper, &data::mapper::set_quithotkey);
 
 	QObject::connect(mainwindow.quit_keyedit, &view::keyedit::key_edited,
-	                 [&quitkey](const QKeySequence& quithotkey)
-	                 {
-		                 quitkey.register_key(quithotkey);
-	                 });
+	                 &quitkey, &hotkey::quit::register_key);
 
 	mapper.read(runners, quitkey);
 	
