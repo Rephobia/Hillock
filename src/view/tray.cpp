@@ -17,8 +17,8 @@ tray::tray(QWidget* parent)
 	
 	auto menu {new QMenu {parent}};
 
-	menu->addAction(quit);
 	menu->addAction(restore);
+	menu->addAction(quit);
 	
 	QSystemTrayIcon::setContextMenu(menu);
 	

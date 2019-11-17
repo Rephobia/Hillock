@@ -21,7 +21,7 @@ class view::mainwindow : public QMainWindow
 {
 	Q_OBJECT
 public:
-	mainwindow(view::runners_decorator* runners);
+	mainwindow();
 	
 	~mainwindow();
 	
@@ -33,9 +33,8 @@ public:
 	void toggle_show();
 	void changeEvent(QEvent* event);
 	
+	view::runners_decorator* runners;
 	view::keyedit* quit_keyedit;
-protected:
-	view::runners_decorator* m_runners;
 private:
 	Ui::MainWindow* ui;
 	
