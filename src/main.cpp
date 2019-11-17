@@ -4,6 +4,7 @@
 #include "mapper.hpp"
 #include "view/runners_decorator.hpp"
 #include "view/mainwindow.h"
+#include "view/keyedit.hpp"
 
 #include "hotkey.hpp"
 
@@ -37,14 +38,15 @@ int main(int argc, char* argv[])
 		                 mapper.set_quithotkey(sequence);
 	                 });
 
-	QObject::connect(&mainwindow, &view::mainwindow::quit_edited,
+	QObject::connect(mainwindow.quit_keyedit, &view::keyedit::key_edited,
 	                 [&quitkey](const QKeySequence& quithotkey)
 	                 {
 		                 quitkey.register_key(quithotkey);
 	                 });
 
 	mapper.read(runners, quitkey);
-	mainwindow.set_quithotkey(quitkey.sequence());
+	
+	mainwindow.quit_keyedit->setKeySequence(quitkey.sequence());
 	mainwindow.show();
 	
 	return app.exec();

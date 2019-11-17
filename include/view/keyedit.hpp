@@ -11,8 +11,11 @@ namespace view {
 
 class view::keyedit : public QKeySequenceEdit
 {
+	Q_OBJECT
 public:
 	keyedit();
+signals:
+	void key_edited(const QKeySequence& quithotkey);
 private:
 	void keyPressEvent(QKeyEvent* event);
 	void keyReleaseEvent(QKeyEvent* event);
