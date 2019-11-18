@@ -8,6 +8,7 @@
 
 
 class QVBoxLayout;
+class QPushButton;
 
 namespace view {
 	class runners_decorator;
@@ -25,11 +26,23 @@ signals:
 	void new_runner(const QString& filepath);
 	void remove_runner(const QString& filepath);
 protected:
+	class runner;
 	void make_runner_widget(model::filepath& filepath);
 	void remove_widget(QString&& path);
 protected:
 	QVBoxLayout* m_layout;
 };
 
+
+class view::runners_decorator::runner : public QWidget
+{
+public:
+	runner(model::filepath& filepath, QWidget* parent);
+	
+	QPushButton* remove;
+private:
+	QWidget* make_item(model::filepath& filepath);
+	QWidget* make_separator();
+};
 
 #endif // HILLOCK_VIEW_RUNNERS_DECORATOR_HPP
