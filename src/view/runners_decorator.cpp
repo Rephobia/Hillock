@@ -8,7 +8,11 @@ using view::runners_decorator;
 
 runners_decorator::runners_decorator()
 	: m_layout {new QVBoxLayout {this}}
-{ ;}
+{
+	m_layout->setAlignment(Qt::AlignTop);
+	m_layout->setSpacing(0);
+	m_layout->setMargin(0);
+}
 
 
 model::filepath& runners_decorator::add(QString&& path)
@@ -22,31 +26,60 @@ model::filepath& runners_decorator::add(QString&& path)
 	return filepath;
 }
 
+
+runners_decorator::runner::runner(model::filepath& filepath, QWidget* parent)
+	: QWidget {parent}
+	, remove  {new QPushButton {QStringLiteral("remove")}}
+{
+	remove->setFixedWidth(100);
+	remove->setFixedHeight(20);
+
+	auto layout {new QVBoxLayout {this}};
+	
+	layout->setSpacing(0);
+	layout->setMargin(0);
+	layout->addWidget(this->make_item(filepath));
+	layout->addWidget(this->make_separator());
+}
+
+QWidget* runners_decorator::runner::make_item(model::filepath& filepath)
+{
+	auto item {new QWidget {this}};
+	auto layout {new QHBoxLayout {item}};
+	
+	auto filename {new QLabel {filepath.name()}};
+	layout->addWidget(filename);
+	layout->addWidget(remove);
+				
+	return item;
+}
+
+QWidget* runners_decorator::runner::make_separator()
+{
+	auto separator {new QFrame {this}};
+
+	separator->setFrameShape(QFrame::HLine);
+	separator->setFrameShadow(QFrame::Sunken);
+	separator->setLineWidth(1);
+	
+	return separator;
+}
+
+
 void runners_decorator::make_runner_widget(model::filepath& filepath)
 {
-	auto widget {new QWidget {}};
-	widget->setObjectName(filepath.path());
+	auto runner {new runners_decorator::runner {filepath, this}};
 	
-	auto runner_lay {new QHBoxLayout {widget}};
-
-	runner_lay->addWidget(new QLabel {filepath.name()});
-
-	auto remove {new QPushButton {"remove"}};
-	
-	QObject::connect(remove, &QPushButton::clicked,
-	                 [this, &filepath]()
+	QObject::connect(runner->remove, &QPushButton::clicked,
+	                 [this, runner, &filepath]()
 	                 {
 		                 emit remove_runner(filepath.path());
 
-		                 auto widget {this->findChild<QWidget*>(filepath.path())};
-		                 widget->hide();
-		                 widget->deleteLater();
+		                 runner->hide();
+		                 runner->deleteLater();
 		                 
 		                 model::runners::remove(filepath);
-
 	                 });
 	
-	runner_lay->addWidget(remove);
-
-	m_layout->addWidget(widget);
+	m_layout->addWidget(runner);
 }
