@@ -1,5 +1,7 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QFileDialog>
+#include <QDir>
 
 #include "view/mainwindow.h"
 #include "./view/ui_mainwindow.h"
@@ -11,7 +13,7 @@
 
 
 using view::mainwindow;
-
+#include <QMessageBox>
 mainwindow::mainwindow()
 	: runners      {new view::runners_decorator {}}
 	, quit_keyedit {new view::keyedit {}}
@@ -31,6 +33,21 @@ mainwindow::mainwindow()
 		                 QWidget::hide();
 	                 });
 
+	QObject::connect(ui->add_button, &QPushButton::clicked,
+	                 [this]()
+	                 {
+
+		                 auto filename {QFileDialog::getOpenFileName(this,
+		                                                             "Choose a file",
+		                                                             QDir::homePath(),
+		                                                             QString {},
+		                                                             nullptr,
+		                                                             QFileDialog::DontResolveSymlinks)};
+		                 if (not filename.isEmpty()) {
+			                 runners->add(std::move(filename));
+		                 }
+	                 });
+	
 	auto tray {new view::tray {this}};
 	
 	QObject::connect(tray, &view::tray::triggered,

@@ -139,6 +139,7 @@ void mapper::write(QJsonObject& old_object, QJsonObject&& new_object)
 
 	}
 }
+
 void mapper::set_quithotkey(const QKeySequence& quithotkey)
 {
 	QJsonObject new_jobject {m_jobject};	
