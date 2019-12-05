@@ -1,5 +1,5 @@
-## Intro
-Hillock is application manager. Runned applications doesn't live longer than Hillock
+## Hillock
+Hillock is a application launcher. Runned applications doesn't live longer than Hillock
 
 ## Build from sources
 
@@ -14,4 +14,5 @@ Hillock is application manager. Runned applications doesn't live longer than Hil
 	
 ## OS support
 Only Windows (child process tracking uses winapi)
+
 Linux version WIP
