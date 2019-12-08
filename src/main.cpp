@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
 {	
 	QApplication app {argc, argv};
 	QCoreApplication::addLibraryPath("./");
+	QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() + "/plugins");
 
 	view::mainwindow mainwindow {};
 	

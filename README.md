@@ -1,13 +1,15 @@
 ## Hillock
 Hillock is a application launcher. Runned applications doesn't live longer than Hillock
 
+### How to install
+Download Hillock.zip: [Latest release](https://github.com/DoomerRoman/Hillock/releases)
+
 ## Build from sources
 
 ### Required
 - **gcc** 8 or higher
 - **cmake** 3.9 or higher
 - **Qt5**
-
 ### Build
     git clone https://github.com/DoomerRoman/Hillock
 	or 
